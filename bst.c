@@ -1,6 +1,4 @@
 #include<stdio.h>
-#include<stdio.h>
-#include<stdlib.h>
 #include<stdlib.h>
 struct tnode
 {
@@ -11,7 +9,7 @@ struct tnode
 typedef struct tnode tnode;
 void createBST(tnode*,int);
 void inorder(tnode* root);
-tnode inp()
+tnode* inp()
 {
 	tnode *root=malloc(sizeof(tnode));
 	scanf("%d",&(root->data));
@@ -24,38 +22,41 @@ tnode inp()
 		if(ele==-1)
 			break;
 		createBST(root,ele);
-		printf("aa\n");
-	inorder(root);
-	printf("bb\n");
+		//printf("aa\n");
+	//inorder(root);
+	//printf("bb\n");
 	}
 	
-	return *root;
+	return root;
 }
 
 void createBST(tnode *root,int ele)
 {
 	tnode* newnode=malloc(sizeof(tnode));
-	printf("a%d\n",root->data);
+	//printf("a%d\n",root->data);
 	if(ele<root->data)
 	{
 		if(root->left!=NULL)
 			createBST(root->left,ele);
 		else
 		{
-		printf("x%d\n",root->data);
-		newnode->left=newnode->right=NULL;
-		newnode->data=ele;
-		root->left=newnode;}
+			//printf("x%d\n",root->data);
+			newnode->left=newnode->right=NULL;
+			newnode->data=ele;
+			root->left=newnode;
+		}
 	}
 	else if(ele>root->data)
 	{
 		if(root->right!=NULL)
 			createBST(root->right,ele);
-		else//without else it gets excuted for each iteration therefore newnode added to main root at the end of function
-		{printf("xx%d\n",root->data);
-		newnode->left=newnode->right=NULL;
-		newnode->data=ele;
-		root->right=newnode;}
+		else//without else it gets excuted for each iteration therefore newnode added to main root at the end of function      
+		{
+			//printf("xx%d\n",root->data);
+		        newnode->left=newnode->right=NULL;
+			newnode->data=ele;
+		 	root->right=newnode;
+		}
 	}
 	
 }
@@ -75,7 +76,7 @@ void delete(tnode **root,int key)
 	prev=NULL;
 	tnode* droot;
 	droot=*root;
-	printf("a");
+	//printf("a");
 
 	while(droot!=NULL)
 	{
@@ -123,47 +124,43 @@ void delete(tnode **root,int key)
 			temp->left=droot->left;
 			replacement=droot->right;
 		}
-		if((*root)==droot)
+		if(prev==NULL)
 		{
 			*root=replacement;
-		//	free(droot);
+			free(droot);
 		}
 		else if(droot->data>prev->data)
 		{
 			prev->right=replacement;
-	//	free(droot);
+	                free(droot);
 		}
 		else if(droot->data<prev->data)
 		{
 			prev->left=replacement;
-	//	free(droot);
+	        	free(droot);
 		}
-		printf("%d,%p",droot->data,droot);
+		//printf("%d,%p\n",droot->data,droot);
 		//free(droot);
 		//droot=NULL;
 		//printf("%p",prev);
-		//if(prev==NULL)
-		//	*root=replacement;
-		//free(droot);
-
 	}
 }
 
-
-
-
 int main()
 {
-	tnode root;
-	printf("Double free err code");
+	tnode* root;
 	printf("Enter the elements\n");
 	root=inp();
 	printf("Tree:\n");
-	inorder(&root);
-	tnode *ptr;
-	ptr=&root;
-	delete(&ptr,10);
-	inorder(&root);
+	inorder(root);
+	//tnode *ptr;
+	//ptr=&root;
+	int del;
+	printf("Enter element to delete");
+	scanf("%d",&del);
+	delete(&root,del);
+	printf("Tree after deletion:\n");
+	inorder(root);
 	return 0;
 }
 

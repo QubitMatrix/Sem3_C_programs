@@ -33,6 +33,7 @@ void construction(int *arr,int x)
 		while(1)//each parent swap should check if it caused any invalid furhter occurances till last child
 		{
 			int lc=2*p+1;
+			//printf("%d %d\n",arr[p],arr[lc]);
 			int rc;
 			int max1;
 			int flag;

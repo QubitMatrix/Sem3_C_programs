@@ -35,13 +35,13 @@ void construction(int *arr,int x)
 			int lc=2*p+1;
 			//printf("%d %d\n",arr[p],arr[lc]);
 			int rc;
-			int max1;
+			int min1;
 			int flag;
 			if(2*p+2<=x-1)//check if right child exists,if parent then left def exists
 			{
 				rc=2*p+2;
-				max1=(arr[lc]<arr[rc])?rc:lc;//choose max child
-				if(max1==rc)
+				min1=(arr[lc]<=arr[rc])?lc:rc;//choose min child
+				if(min1==rc)
 					flag=2;//1 means left 2 is right
 				else
 					flag=1;
@@ -49,13 +49,13 @@ void construction(int *arr,int x)
 			else
 			{
 				rc=-1;
-				max1=lc;
+				min1=lc;
 				flag=1;
 			}
-			if(arr[p]>=arr[max1])//check if parent lesser than max child
+			if(arr[p]<=arr[min1])//check if parent lesser than min child
 				flag=0;
 			else
-				swap(arr,p,max1);
+				swap(arr,p,min1);
 			if(flag==0)//if no swap then no changes so break
 				break;
 			else if(flag==1)//check till last child, if left was swapped pass through left subtree
@@ -102,13 +102,13 @@ int delete(int *arr,int *len)
 		{
 			int lc=2*p+1;
 			int rc;
-			int max1;
+			int min1;
 			int flag;
 			if(2*p+2<=(*len)-1)
 			{
 				rc=2*p+2;
-				max1=(arr[lc]<arr[rc])?rc:lc;
-				if(max1==rc)
+				min1=(arr[lc]<arr[rc])?lc:rc;
+				if(min1==rc)
 					flag=2;
 				else
 					flag=1;
@@ -116,13 +116,13 @@ int delete(int *arr,int *len)
 			else
 			{
 				rc=-1;
-				max1=lc;
+				min1=lc;
 				flag=1;
 			}
-			if(arr[p]>=arr[max1])
+			if(arr[p]<=arr[min1])
 				flag=0;
 			else
-				swap(arr,p,max1);
+				swap(arr,p,min1);
 			if(flag==0)
 				break;
 			else if(flag==1)

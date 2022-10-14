@@ -1,166 +1,181 @@
-#include<stdio.h>
-#include<stdlib.h>
-struct tnode
-{
-	struct tnode* left;
-	int data;
-	struct tnode* right;
+#include <stdio.h>
+#include <stdlib.h>
+
+int check=0;
+int found=0;
+//struct for node
+struct node {
+    char *value;            // all void* types replaced by char*
+    struct node *p_left;
+    struct node *p_right;
 };
-typedef struct tnode tnode;
-void createBST(tnode*,int);
-void inorder(tnode* root);
-tnode* inp()
+
+int my_strlen(char * s) 
 {
-	tnode *root=malloc(sizeof(tnode));
-	scanf("%d",&(root->data));
-	root->left=NULL;
-	root->right=NULL;
-	while(1)
-	{
-		int ele;
-		scanf("%d",&ele);
-		if(ele==-1)
-			break;
-		createBST(root,ele);
-		//printf("aa\n");
-	//inorder(root);
-	//printf("bb\n");
-	}
-	
-	return root;
+    int len=0;
+    int i=0;
+    while(s[i]!='\0')
+    {
+  		len++;
+		i++;
+    }
+    //printf("%d",len);
+    return len;
 }
 
-void createBST(tnode *root,int ele)
+void my_strcpy(char *str1, char *str2)//str2 is source, str1 is dest
 {
-	tnode* newnode=malloc(sizeof(tnode));
-	//printf("a%d\n",root->data);
-	if(ele<root->data)
-	{
-		if(root->left!=NULL)
-			createBST(root->left,ele);
-		else
-		{
-			//printf("x%d\n",root->data);
-			newnode->left=newnode->right=NULL;
-			newnode->data=ele;
-			root->left=newnode;
-		}
-	}
-	else if(ele>root->data)
-	{
-		if(root->right!=NULL)
-			createBST(root->right,ele);
-		else//without else it gets excuted for each iteration therefore newnode added to main root at the end of function      
-		{
-			//printf("xx%d\n",root->data);
-		        newnode->left=newnode->right=NULL;
-			newnode->data=ele;
-		 	root->right=newnode;
-		}
-	}
-	
+    int i=0;
+    while(i<my_strlen(str2))
+    {
+    	str1[i]=str2[i];
+       	i++;
+    }
+    str1[i]='\0';
 }
-void inorder(tnode* root)
-{
-	if(root!=NULL)
-	{
-		inorder(root->left);
-		printf("%d\n",root->data);//(*root).data
-		inorder(root->right);
-	}
-}
-void delete(tnode **root,int key)
-{
-	tnode* prev;
-	tnode* replacement;
-	prev=NULL;
-	tnode* droot;
-	droot=*root;
-	//printf("a");
 
-	while(droot!=NULL)
-	{
+int my_strcmp(const char *a, const char *b)
+{
+    int i=0;
+    	while(a[i]!='\0')
+    	{
+    		if(a[i]!=b[i])
+    			return (a[i]-b[i]);
+    		i++;
+    	}
+    	return 0;
+}
+//inserts elements into the tree
+void insert(char* key, struct node** leaf)
+{
+    if((*leaf)==NULL)
+    {
+        struct node* newnode=malloc(sizeof(struct node));
+        newnode->p_left=newnode->p_right=NULL;
+        newnode->value=malloc(100);
+        (*leaf)=newnode;
+        my_strcpy(newnode->value,key);
+        //printf("b%s\n",(*leaf)->value);
+    }
+    else
+    {
+        if(my_strcmp(key,(*leaf)->value)>0)
+        {
+            if((*leaf)->p_right==NULL)
+            {
+                struct node* newnode=malloc(sizeof(struct node));
+                newnode->p_left=newnode->p_right=NULL;
+                newnode->value=malloc(100);
+                my_strcpy(newnode->value,key);
+                (*leaf)->p_right=newnode;
+                //printf("c%s\n",(*leaf)->value);
+            }
+            else
+            {
+                insert(key,&(*leaf)->p_right);
+            }
+        }
+        else if(my_strcmp(key,(*leaf)->value)<0)
+        {
+            
+            if((*leaf)->p_left==NULL)
+            {
+                struct node* newnode=malloc(sizeof(struct node));
+                newnode->p_left=newnode->p_right=NULL;
+                newnode->value=malloc(100);
+                my_strcpy(newnode->value,key);
+                (*leaf)->p_left=newnode;
+                //printf("d%s\n",(*leaf)->value);
+            }
+            else
+            {
+                insert(key,&(*leaf)->p_left);
+            }
+        }
+        else
+        {
+            check=-1;
+        }
+    }
+}
 
-		
-		if(key<(droot)->data)
-		{
-			prev=droot;
-			droot=(droot)->left;
-		}
-		else if(key>(droot)->data)
-		{
-			prev=droot;
-			droot=(droot)->right;
-		}
-		else//if(key==(droot)->data)
-		{	
-			break;
-		}
-	}
-	if(droot==NULL)
-		printf("Missing key");
-	else
+
+
+
+//recursive function to print out the tree inorder
+void asc_order(struct node *root)
+{
+    if(root!=NULL)
 	{
-		if(droot->left==NULL && droot->right==NULL)
-		{
-			replacement=NULL;
-		}
-		else if(droot->left==NULL && droot->right!=NULL)
-		{
-			replacement=droot->right;
-		}
-		else if(droot->right==NULL && droot->left!=NULL)
-		{
-			replacement=droot->left;
-		}
-		else
-		{
-			tnode* temp;
-			temp=droot->right;
-			while(temp->left!=NULL)
-			{
-				temp=temp->left;
-			}
-			temp->left=droot->left;
-			replacement=droot->right;
-		}
-		if(prev==NULL)
-		{
-			*root=replacement;
-			free(droot);
-		}
-		else if(droot->data>prev->data)
-		{
-			prev->right=replacement;
-	                free(droot);
-		}
-		else if(droot->data<prev->data)
-		{
-			prev->left=replacement;
-	        	free(droot);
-		}
-		//printf("%d,%p\n",droot->data,droot);
-		//free(droot);
-		//droot=NULL;
-		//printf("%p",prev);
+		asc_order(root->p_left);
+		printf("%s\n",root->value);
+		asc_order(root->p_right);
 	}
 }
+
+
+
+//searches elements in the tree
+void search(char* key, struct node* leaf)  // no need for **
+{
+        if(leaf!=NULL)
+        {
+            if(my_strcmp(key,leaf->value)>0)
+            {
+                if(leaf->p_right!=NULL)
+                {
+                    search(key,leaf->p_right);
+                }
+            }
+            else if(my_strcmp(key,leaf->value)<0)
+            {
+            
+                if(leaf->p_left!=NULL)
+                {
+                    search(key,leaf->p_left);
+                }
+            }
+            else
+            {
+                found=1;
+            }
+        }
+}
+
+
+
 
 int main()
 {
-	tnode* root;
-	printf("Enter the elements\n");
-	root=inp();
-	printf("Tree:\n");
-	inorder(root);
-	//tnode *ptr;
-	//ptr=&root;
-	int del;
-	printf("Enter element to delete");
-	scanf("%d",&del);
-	delete(&root,del);
-	printf("Tree after deletion:\n");
-	inorder(root);
-	return 0;
-}
+    struct node *p_root = NULL;
+    char *value;
+    size_t malloc_size = 100;
+    int size;
+    int temp=100;
+    printf("Enter number of srns\n");
+    scanf("%d",&size);
+    int i;
+    //reading the input and inserting in the tree
+    char *srn[size];
+    printf("Enter SRNs\n");
+    for (i = 0; i < size; i++) 
+    {
+        srn[i] = malloc(malloc_size * sizeof(char)); /* allocates 100 bytes */
+        scanf("%99s", srn[i]);
+        insert(srn[i],&p_root);
+    }   
+    char searchname[temp];
+    scanf("%s",searchname);
 
+    //checking inorder print
+    printf("Ascending order:\n");
+    asc_order(p_root);
+
+    //checking for 1 or more duplicate insertions
+    printf("Check duplicate:%d\n",check);
+
+    //searching a string in the tree
+    search(searchname,p_root);
+    printf("Found:%d\n",found);
+    return 0;
+}

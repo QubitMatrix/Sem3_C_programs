@@ -1,48 +1,41 @@
-//DMA:using double pointer
- #include<stdio.h>
+
+//DMA:using single pointer
+#include<stdio.h>
  #include<stdlib.h>
-void mul(int **a,int **b,int **c,int r1,int c1,int c2)
+void mul(int *a,int *b,int *c,int r1,int c1,int c2)
 {
 for(int i=0;i<r1;i++)
 {
 for(int j=0;j<c2;j++)
 {
-c[i][j]=0;
+*(c+(i*c2)+j)=0;
 for(int k=0;k<c1;k++)
 {
-*(*(c+i)+j)+=*(*(a+i)+k)*(*(*(b+k)+j));
+*(c+(i*c2)+j)+=*(a+(i*c1)+k)*(*(b+(k*c2)+j));
 }
 }
 }
 }
-int** allocat(int r,int c)
+int* allocat(int r,int c)
 {
-int **ptr;
-ptr=malloc(r*sizeof(int*));
-for(int i=0;i<c;i++)
-{
-ptr[i]=malloc(c*sizeof(int));
-}
+int *ptr;
+ptr=malloc(r*c*sizeof(int));
 return ptr;
 }
-void inp(int **ptr,int r,int c)
+void inp(int *ptr,int r,int c)
 {
-for(int i=0;i<r;i++)
+for(int i=0;i<r*c;i++)
 {
-for(int j=0;j<c;j++)
-{
-scanf("%d",(*(ptr+i)+j));
+scanf("%d",ptr++);//or ptr+i
+
 }
 }
-}
-void out(int **ptr,int r,int c)
+void out(int *ptr,int r,int c)
 {
-for(int i=0;i<r;i++)
+for(int i=0;i<r*c;i++)
 {
-for(int j=0;j<c;j++)
-{
-printf("%d ",*(*(ptr+i)+j));
-}
+printf("%d ",*(ptr++));
+if(i%3==2)
 printf("\n");
 }
 }
@@ -50,7 +43,7 @@ int main()
 {
 
 int r1,c1,r2,c2;
-int **ma,**mb,**mc;
+int *ma,*mb,*mc;
 printf("Enter the row1 col1 ro2 col2\n");
 scanf("%d %d %d %d",&r1,&c1,&r2,&c2);
 ma=allocat(r1,c1);
@@ -65,3 +58,4 @@ printf("Multiplied matrix:\n");
 out(mc,r1,c2);
 return 0;
 }
+

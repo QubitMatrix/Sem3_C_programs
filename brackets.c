@@ -1,3 +1,7 @@
+/*left bracket is missing ({})} stack got empty expression not exhausted
+right bracket is missing({} stack not empty expression exhausted
+mismatch({)}incoming and bracket at top is not matching
+*/
 #include<stdio.h>
 #include<stdlib.h>
 struct stack

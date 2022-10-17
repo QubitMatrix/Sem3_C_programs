@@ -127,7 +127,7 @@ void check(tnode** mroot,list *l)
 			c=l->arr[l->len+2];
 			reset(*mroot);
 			levelorder(*mroot);
-			printf("values:%d %d %d %d\n",l->len,gp->data,p->data,c->data);
+			printf("values:%d %d %d %d\n",l->len,gp_prev->data,p->data,c->data);
 			if(p==gp->left && c==p->left)//LL
 			{
 				printf("ll\n");
@@ -142,17 +142,19 @@ void check(tnode** mroot,list *l)
 				printf("check3:%d %d %d\n",c->data,c->lh,c->rh);
 				
 				if(l->len==0)
-				 {
+				 {printf("zzz");
 				 *mroot=p;
 				 gp_prev=p;
 				 }
-				 else if(l->len>0 && gp==gp_prev->left )
+				 else if(l->len>0 && gp==gp_prev->left)
 				{
+					printf("zzz");
 					gp_prev->left=p;
 					gp_prev->lh=1+((p->lh>p->rh)?p->lh:p->rh);
 				}
-				else if(l->len=0 && gp==gp_prev->right)
+				else if(l->len>0 && gp==gp_prev->right)
 				{
+					printf("zzz");
 					gp_prev->right=p;
 					gp_prev->rh=1+((p->lh>p->rh)?p->lh:p->rh);
 				}
@@ -194,7 +196,8 @@ void check(tnode** mroot,list *l)
 				p->lh=c->rh;
 				c->right=p;
 				c->rh=1+((p->lh>p->rh)?p->lh:p->rh);
-				gp->lh=1+((c->lh>c->rh)?c->lh:c->rh);
+				gp->right=c;
+				gp->rh=1+((c->lh>c->rh)?c->lh:c->rh);
 				printf("check3:%d %d %d\n",gp->data,gp->lh,gp->rh);
 				printf("check3:%d %d %d\n",p->data,p->lh,p->rh);
 				printf("check3:%d %d %d\n",c->data,c->lh,c->rh);
@@ -233,7 +236,8 @@ void check(tnode** mroot,list *l)
 				p->rh=c->lh;
 				c->left=p;
 				c->lh=1+((p->lh>p->rh)?p->lh:p->rh);
-				gp->rh=1+((c->lh>c->rh)?c->lh:c->rh);
+				gp->left=c;
+				gp->lh=1+((c->lh>c->rh)?c->lh:c->rh);
 				printf("check3:%d %d %d\n",gp->data,gp->lh,gp->rh);
 				printf("check3:%d %d %d\n",p->data,p->lh,p->rh);
 				printf("check3:%d %d %d\n",c->data,c->lh,c->rh);
@@ -244,8 +248,9 @@ void check(tnode** mroot,list *l)
 				c=temp;
 				gp->left=p->right;
 				gp->lh=p->rh;
-				p->rh=1+((gp->lh>gp->rh)?gp->lh:gp->rh);
 				p->right=gp;
+				p->rh=1+((gp->lh>gp->rh)?gp->lh:gp->rh);
+				
 				printf("check3_:%d %d %d\n",gp->data,gp->lh,gp->rh);
 				printf("check3_:%d %d %d\n",p->data,p->lh,p->rh);
 				printf("check3_:%d %d %d\n",c->data,c->lh,c->rh);

@@ -31,30 +31,47 @@ void dfs(int source,int** graph_mat,int* visited,int n)
 				dfs(i,graph_mat,visited,n);
 	}
 }
-void DFS(int source,int** graph_mat,int* visited,int n)
+int DFS(int source,int** graph_mat,int* visited,int n)
 {
-	
+	int comp=1;
 	dfs(source,graph_mat,visited,n);
 	for(int i=0;i<n;i++)
 	{
 		if(visited[i]==0)
 		{
-	
+			comp++;
 			dfs(i,graph_mat,visited,n);
 		}
 	}
-	
+	return comp;
 }
 int main()
 {
 	int **graph_mat;
 	int n;
-	
+	printf("Enter the number of vertices");
 	scanf("%d",&n);
 	graph_mat=creategraph(n);readgraph(graph_mat,n);
 	int *visited=calloc(sizeof(int),n);
 	int source=0;
-	DFS(source,graph_mat,visited,n);//wrapper function
+	int comp=DFS(source,graph_mat,visited,n);//wrapper function
+	printf("\nThe number of components in the graph:%d\n",comp);
+	if(comp==1)
+		printf("Connected graph\n");
+	else
+		printf("Not connected graph\n");
+	printf("Enter the source and destination\n");
+	int src,des;
+	scanf("%d %d",&src,&des);
+	for(int i=0;i<n;i++)
+	{
+		visited[i]=0;
+	}
+	dfs(src,graph_mat,visited,n);
+	if(visited[des]==1)
+		printf("\n%d is connected to %d by a path",src,des);
+	else
+		printf("\nNo path between %d and %d",src,des);
 	return 0;
 }
 

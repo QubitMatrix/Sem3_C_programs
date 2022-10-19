@@ -31,6 +31,20 @@ void dfs(int source,int** graph_mat,int* visited,int n)
 				dfs(i,graph_mat,visited,n);
 	}
 }
+void DFS(int source,int** graph_mat,int* visited,int n)
+{
+	
+	dfs(source,graph_mat,visited,n);
+	for(int i=0;i<n;i++)
+	{
+		if(visited[i]==0)
+		{
+	
+			dfs(i,graph_mat,visited,n);
+		}
+	}
+	
+}
 int main()
 {
 	int **graph_mat;
@@ -40,7 +54,7 @@ int main()
 	graph_mat=creategraph(n);readgraph(graph_mat,n);
 	int *visited=calloc(sizeof(int),n);
 	int source=0;
-	dfs(source,graph_mat,visited,n);
+	DFS(source,graph_mat,visited,n);//wrapper function
 	return 0;
 }
 

@@ -4,7 +4,6 @@
 #include <math.h>
 #include<stdbool.h>
 #define MAX 100
-
 typedef struct node 
 {
     int id; //ID of user
@@ -81,9 +80,9 @@ struct node* search(int key, struct node *users)
 	    }
     }
     if(users==NULL)
-	    return NULL;//printf("Not found");
+	    return NULL;
     else
-	    return temp;//printf("Found");
+	    return temp;
 
 }
 
@@ -91,13 +90,12 @@ struct node* search(int key, struct node *users)
 struct node*refineUser(struct node*user, struct node *users)
 {
     //CODE HERE
+    user->left=user->right=NULL;
     int pos;
-    int del=0;
     struct node* search1;
     while(1)
     {
 	    search1=search(user->id,users);
-	    
 	    if(search1==NULL)
 		    break;
 	    else
@@ -106,10 +104,8 @@ struct node*refineUser(struct node*user, struct node *users)
 		    search1=search(user->id,users);
 	    }
     }
-    printf("a%d\n",user->numfren);
     for(int j=0;j<user->numfren;j++)
     {
-	    printf("z%d\n",user->friends[j]);
 	    search1=search(user->friends[j],users);
 	    if(search1==NULL)
 	    {
@@ -120,66 +116,44 @@ struct node*refineUser(struct node*user, struct node *users)
 		}
 		for(int x=pos;x<user->numfren-1;x++)
 			user->friends[x]=user->friends[x+1];
-	        del++;	
 		user->numfren--;
 		j--;
 
 	    }
 	    else
 	    {
-	    //printf("zz%d\n",search1->numfren);
-	   
-		  search1->friends[search1->numfren++]=user->id;
-	    //printf("zz%d\n",search1->numfren);
-	   
+  		  search1->friends[search1->numfren++]=user->id;
 	    }
     }
-    //user->numfren-=del;
-		if(user->numfren==0)
-			user->friends[0]=-1;
-    printf("c%d %d\n",user->numfren,user->id);
+    if(user->numfren==0)
+	user->friends[0]=-1;
     return user;
-
-
 }
 
 //insert user with id
 struct node* insertUser(struct node*root,int id,struct node*user)
 {
    //CODE HERE
-   //struct node* newnode=malloc(sizeof(struct node));
-	//printf("a%d\n",root->id);
+
 	if(root==NULL)
 	{
-//		newnode->left=newnode->right=NULL;
-		//newnode;
 		root=user;
 	}
-	else 
+	else
 	{
 		if(id<root->id)
-		{ 
+		{
 			if(root->left!=NULL)
 				insertUser(root->left,id,user);
 			else
-			{
-				//printf("x%d\n",root->id);
-//				newnode->left=newnode->right=NULL;
-//				newnode->id=id;
 				root->left=user;
-			}
 		}
 		else if(id>root->id)
 		{
 			if(root->right!=NULL)
 				insertUser(root->right,id,user);
-			else//without else it gets excuted for each iteration therefore newnode added to main root at the end of function      
-			{
-				//printf("xx%d\n",root->id);
-//		        	newnode->left=newnode->right=NULL;
-//				newnode->id=id;
-		 		root->right=user;
-			}	
+			else
+				root->right=user;
 		}
 	}
 	return root;
@@ -197,7 +171,6 @@ void friends(int id, struct node *users)
 	   if(search1->numfren==0)
 		   printf("-1\n");
    }
-
 }
 
 //find child node with minimum value (inorder successor) - helper to delete node
@@ -220,7 +193,6 @@ struct node*deleteFriends(int key, struct node*users)
 	struct node* search1=search(key,users);
 	if (search1==NULL)
 		return NULL;
-
 	for(int i=0;i<search1->numfren;i++)
 	{
 		struct node* delsearch=search(search1->friends[i],users);
@@ -232,14 +204,10 @@ struct node*deleteFriends(int key, struct node*users)
 		for(int x=pos;x<delsearch->numfren-1;x++)
 			delsearch->friends[x]=delsearch->friends[x+1];
 		delsearch->numfren--;
-
 	}
 	if(search1->numfren==0)
 		search1->friends[0]=-1;
-
-
 	return users;
-    
 }
 
 // Deleting a node
@@ -250,8 +218,6 @@ struct node *deleteNode(struct node *root, int key) {
 	prev=NULL;
 	struct node* droot;
 	droot=root;
-	//printf("a");
-
 	while(droot!=NULL)
 	{
 		if(key<(droot)->id)
@@ -264,14 +230,12 @@ struct node *deleteNode(struct node *root, int key) {
 			prev=droot;
 			droot=(droot)->right;
 		}
-		else//if(key==(droot)->id)
+		else
 		{	
 			break;
 		}
 	}
-	if(droot==NULL)
-		printf("Missing key");
-	else
+	if(droot!=NULL)
 	{
 		if(droot->left==NULL && droot->right==NULL)
 		{
@@ -318,10 +282,10 @@ void printInOrder(node* myusers)
     //CODE HERE
     if(myusers!=NULL)
     {
-
     	    printInOrder(myusers->left);
-    	    printf("%d %s\n",myusers->id,myusers->name);    	    printInOrder(myusers->right);
-    }
+     	    printf("%d %s\n",myusers->id,myusers->name);
+	    printInOrder(myusers->right);
+    } 
 }
 
 
@@ -341,18 +305,15 @@ int main(int argc, char **argv)
       
                 scanf("%s",str);
                 struct node*tbins=retUser(str); 
-		tbins=refineUser(tbins, users);
-                printf("b%d\n",tbins->id);      
+		tbins=refineUser(tbins, users);      
 	        users=insertUser(users,tbins->id,tbins);
                 break;
 
             case 2:
            
                 scanf("%d", &id);
-                printf("users:%d\n",users->numfren);
                 deleteFriends(id, users);
-                printf("users:%d\n",users->numfren);
-		users=deleteNode(users, id);
+                users=deleteNode(users, id);
                 break;
 
             case 3:

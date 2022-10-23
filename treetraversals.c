@@ -154,6 +154,13 @@ void destroy(tnode* root)
 		free(root);
 	}
 }
+int getHeight(tnode* root)
+{
+	if(root==NULL)
+    		return -1;
+    	else
+    		return (1+(getHeight(root->left)>getHeight(root->right)?getHeight(root->left):getHeight(root->right)));
+}
 int main()
 {
 	tnode* root;
@@ -161,7 +168,7 @@ int main()
 	printf("Enter the root element:");
 	root=createBT();
 	int choice;
-	printf("Enter 1.for preorder \n2. for inorder\n3. for postorder \n4. for level order\n5.to count number of nodes in tree\n6. to destroy tree\n7. exit\n");
+	printf("Enter 1.for preorder \n2. for inorder\n3. for postorder \n4. for level order\n5.to count number of nodes in tree\n6.get height of tree\n7.to destroy tree\n8. exit\n");
        	if(root==NULL)
 	{
 		printf("Empty tree");
@@ -192,10 +199,12 @@ int main()
 			       nodes=count(root);
 		       printf("Number of nodes=%d\n",nodes);
 		       break;
-		case 6:destroy(root);
+		case 6:printf("Height of tree=%d\n",getHeight(root));
+		       break;
+		case 7:destroy(root);
 		       root=NULL;
 		       break;
-		case 7:exit(0);
+		case 8:exit(0);
 
 		default:printf("Wrong Choice");
 	}

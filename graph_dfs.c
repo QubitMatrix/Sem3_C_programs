@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+int count=0;
 int **creategraph(int n)
 {
 	int ** graph_mat;
@@ -20,83 +21,62 @@ void readgraph(int** graph_mat,int n)
 		}
 	}
 }
-void dfs(int source,int** graph_mat,int* visited,int n,int comp,int* vorder,int* dorder,int* parent)
+void dfs(int source,int** graph_mat,int* visited,int n,int des,int* path)
 {
-	static int count=0,countd=0;
-	visited[source]=comp;
-	vorder[count]=source;
-	printf("Vertice:%d,Component id:%d\n",source,visited[source]);
+	//static int count=0;
+	visited[source]=1;
+	printf("%d ",source);
+	if(source!=des){
 	for(int i=0;i<n;i++)
 	{
+		if(source==des)
+		{
+			path[count]=source;
+			count++;
+			break;
+		}
 		if(graph_mat[source][i]==1)//neighbour
 			if(visited[i]==0)//not visited
-			{	parent[i]=source;
+			{
+				path[count]=source;
 				count++;
-				dfs(i,graph_mat,visited,n,comp,vorder,dorder,parent);
-	printf("dead end order(postorder):\n");
-	for(int i=0;i<n;i++)
+				dfs(i,graph_mat,visited,n,des,path);		
+			}
+	}
+	if(visited[des]==0)
+		count=0;
+	}
+	else if(source==des)
 	{
-		printf("%d\n",dorder[i]);
+		path[count]=source;
+		count++;
 	}
-			}		
-	}
-	dorder[countd]=source;
-	countd++;
-	//printf("%d ",source);
-}
-void DFS(int source,int** graph_mat,int* visited,int n,int *vorder,int *dorder,int* parent)
-{
-	int comp=1;
-	parent[source]=source;
-	dfs(source,graph_mat,visited,n,comp,vorder,dorder,parent);
-	for(int i=0;i<n;i++)
-	{
-		if(visited[i]==0)
-		{
-			comp++;
-			dfs(i,graph_mat,visited,n,comp,vorder,dorder,parent);
-		}
-	}
+	
 }
 int main()
 {
 	int **graph_mat;
 	int n;
+	printf("Enter the number of vertices");
 	scanf("%d",&n);
 	graph_mat=creategraph(n);readgraph(graph_mat,n);
 	int *visited=calloc(sizeof(int),n);
-	int *vorder=malloc(sizeof(int)*n);
-	int *dorder=malloc(sizeof(int)*n);
-	int *parent=malloc(sizeof(int)*n);
 	int source=0;
-	DFS(source,graph_mat,visited,n,vorder,dorder,parent);//wrapper function
-	printf("visited order(preorder):\n");
+	printf("Enter the source and destination\n");
+	int src,des;
+	int* path;
+	scanf("%d %d",&src,&des);
 	for(int i=0;i<n;i++)
 	{
-		printf("%d\n",vorder[i]);
+		visited[i]=0;
 	}
-	printf("dead end order(postorder):\n");
-	for(int i=0;i<n;i++)
-	{
-		printf("%d\n",dorder[i]);
-	}
-	printf("(inorder):\n");
-	free(visited);
-	visited=calloc(sizeof(int),n);
-	for(int i=0;i<n;i++)
-	{
-		if(visited[dorder[i]]==0)
-		{
-			printf("%d\n",dorder[i]);
-			visited[dorder[i]]=1;
-		}
-		if(visited[parent[dorder[i]]]==0)
-		{
-			visited[parent[dorder[i]]]=1;
-			//printf("a%d\n",parent[dorder[i]]);	
-			printf("%d\n",parent[dorder[i]]);
-		}
-	}
+	dfs(src,graph_mat,visited,n,des,path);
+	printf("Path:\n");
+	for(int i=0;i<count;i++)
+		printf("%d ",path[i]);
+	if(visited[des]==1)
+		printf("\n%d is connected to %d by a path",src,des);
+	else
+		printf("\nNo path between %d and %d",src,des);
 	return 0;
 }
-

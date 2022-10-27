@@ -309,7 +309,8 @@ void createBST(tnode** mroot,tnode* root,int ele,list* l)
 			l->arr[l->len]=root->left;
 			//l->top++;
 			l->len++;
-			//root->lh++;
+			//if(root->right==NULL)
+			//	root->lh++;
 			createBST(mroot,root->left,ele,l);
 		}
 		else
@@ -318,6 +319,7 @@ void createBST(tnode** mroot,tnode* root,int ele,list* l)
 			newnode->lh=newnode->rh=0;
 			newnode->data=ele;
 			root->left=newnode;
+			//if(root->right==NULL)
 			//root->lh++;
 			l->arr[l->len]=root->left;
 			//l->top++;
@@ -338,7 +340,8 @@ void createBST(tnode** mroot,tnode* root,int ele,list* l)
 			l->arr[l->len]=root->right;
 			//l->top++;
 			l->len++;
-			//root->rh++;
+			//if(root->left==NULL)
+			//	root->rh++;
 			createBST(mroot,root->right,ele,l);
 		}
 		else
@@ -347,6 +350,7 @@ void createBST(tnode** mroot,tnode* root,int ele,list* l)
 			newnode->lh=newnode->rh=0;
 			newnode->data=ele;
 			root->right=newnode;
+			//if(root->left==NULL)
 			//root->rh++;
 			l->arr[l->len]=root->right;
 			//l->top++;

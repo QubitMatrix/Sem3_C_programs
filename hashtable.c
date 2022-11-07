@@ -19,7 +19,9 @@ typedef struct hashtable hashtable;
 void insert(hashtable *Htable,int key)
 {
 	int index;
+	
 	index=key%Htable->size;
+	//printf("abc%d",index);
 	if(Htable->H[index].marker==0)
 	{
 		Htable->H[index].marker=1;
@@ -31,30 +33,48 @@ void insert(hashtable *Htable,int key)
 		int probevalue=1;
 		int checkcounter=1;
 		int newindex=index;
-		int index2=5-key%5;
-		while(Htable->H[newindex].marker==1 && checkcounter<=Htable->size)
+		int index2=7-key%7;
+		while(Htable->H[newindex].marker==1)
 		{
 			//newindex=(index+probevalue)%Htable->size;//linear
 			//newindex=(index+probevalue*probevalue)%Htable->size;//quadratic
 			newindex=(index+probevalue*index2)%Htable->size;//double hashing
 			probevalue++;
-			checkcounter++;
+			//checkcounter++;
 		}
-		if(checkcounter==Htable->size)
-			printf("Full");
-		else
-		{
-			Htable->H[newindex].key=key;
-			Htable->H[newindex].marker=1;
-			Htable->count++;
-		}
+		Htable->H[newindex].key=key;
+		Htable->H[newindex].marker=1;
+		Htable->count++;
+		
 	}
-
+	/*
 	for(int i=0;i<Htable->size;i++)
 		printf("xx%d ",Htable->H[i].key);
 	printf("\n");
-	
+	*/
 }
+void rehash(hashtable *Htable)
+{
+	int* arr=malloc(sizeof(int)*Htable->size);
+	int len1=Htable->size;
+	for(int i=0;i<Htable->size;i++)
+		arr[i]=Htable->H[i].key;
+	Htable->H=malloc(sizeof(data)*Htable->size*2);
+	Htable->size=2*Htable->size;
+	Htable->count=0;
+	for(int i=0;i<Htable->size;i++)
+	{
+		Htable->H[i].key=0;
+		Htable->H[i].marker=0;
+	}
+	printf("rehash%d\n",Htable->size);
+	for(int i=0;i<len1;i++)
+	{
+		printf("Reinserting:%d\n",arr[i]);
+		insert(Htable,arr[i]);
+	}
+}
+
 int main()
 {
 	hashtable* Htable;
@@ -71,11 +91,18 @@ int main()
 	while(key!=-1)
 	{
 		scanf("%d",&key);
-		insert(Htable,key);
+		printf("count%d\n",Htable->count);
+		if(Htable->count<Htable->size)
+			insert(Htable,key);
+		else
+		{
+			rehash(Htable);
+			for(int i=0;i<size;i++)
+				printf("%d ",Htable->H[i].key);
+			insert(Htable,key);
+		}
 	}
-	for(int i=0;i<size;i++)
-		printf("%d ",Htable->H[i].key);
-	
-	
+        for(int i=0;i<Htable->size;i++)
+	printf("%d ",Htable->H[i].key);	
 	return 0;
 }

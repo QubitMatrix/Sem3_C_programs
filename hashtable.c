@@ -59,7 +59,7 @@ void rehash(hashtable *Htable)
 	int len1=Htable->size;
 	for(int i=0;i<Htable->size;i++)
 		arr[i]=Htable->H[i].key;
-	Htable->H=malloc(sizeof(data)*Htable->size*2);
+	Htable->H=realloc(Htable->H,sizeof(data)*Htable->size*2);
 	Htable->size=2*Htable->size;
 	Htable->count=0;
 	for(int i=0;i<Htable->size;i++)
@@ -78,7 +78,8 @@ void rehash(hashtable *Htable)
 int main()
 {
 	hashtable* Htable;
-	Htable=malloc(sizeof(malloc));
+	Htable=malloc(sizeof(hashtable));//works in gcc without this as gcc oversees it 
+	printf("%d",sizeof(malloc));
 	Htable->count=0;
 	Htable->H=NULL;
 	int size;
@@ -92,6 +93,8 @@ int main()
 	{
 		scanf("%d",&key);
 		printf("count%d\n",Htable->count);
+		if(key==-1)
+			break;
 		if(Htable->count<Htable->size)
 			insert(Htable,key);
 		else

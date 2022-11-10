@@ -53,14 +53,31 @@ void insert(hashtable *Htable,int key)
 	printf("\n");
 	*/
 }
+int prime(int n)
+{
+	int count=0;
+	for(int i=n;i<2*n;i++)
+	{
+		count=0;
+		for(int j=2;j<i;j++)
+		{
+			if(i%j==0)
+				count++;
+		}
+		if(count==0)
+			return i;
+	}
+}
 void rehash(hashtable *Htable)
 {
 	int* arr=malloc(sizeof(int)*Htable->size);
 	int len1=Htable->size;
 	for(int i=0;i<Htable->size;i++)
 		arr[i]=Htable->H[i].key;
-	Htable->H=realloc(Htable->H,sizeof(data)*Htable->size*2);
-	Htable->size=2*Htable->size;
+	int newsize=prime(Htable->size*2);
+	printf("New size:%d\n",newsize);
+	Htable->H=realloc(Htable->H,sizeof(data)*newsize);
+	Htable->size=newsize;
 	Htable->count=0;
 	for(int i=0;i<Htable->size;i++)
 	{
@@ -74,7 +91,33 @@ void rehash(hashtable *Htable)
 		insert(Htable,arr[i]);
 	}
 }
-
+int search(hashtable*Htable,int ser)
+{
+	int index=ser%Htable->size;
+	if(Htable->H[index].key==ser)
+		return index;
+	else
+	{
+		int counter=0;
+		int probevalue=1;
+		int newindex;
+		while(counter<Htable->size)
+		{
+			newindex=index+probevalue*(7-ser%7);
+		        if(Htable->H[newindex].key==ser)
+				return newindex;
+			probevalue++;
+			counter++;
+		}
+		return -1;
+	}
+}
+int delete(hashtable *Htable,int key)
+{
+	int index=search(Htable,key);
+	Htable->H[index].key=0;
+	Htable->H[index].marker=0;
+}
 int main()
 {
 	hashtable* Htable;
@@ -106,6 +149,17 @@ int main()
 		}
 	}
         for(int i=0;i<Htable->size;i++)
+	printf("%d ",Htable->H[i].key);	
+	int serkey;
+	printf("\nEnter key to search\n");
+	scanf("%d",&serkey);
+	int ser=search(Htable,serkey);
+	printf("search:%d\n",ser);
+        int delkey;
+	printf("Enter key to delete\n");
+	scanf("%d",&delkey);
+	int del=delete(Htable,delkey);
+	for(int i=0;i<Htable->size;i++)
 	printf("%d ",Htable->H[i].key);	
 	return 0;
 }

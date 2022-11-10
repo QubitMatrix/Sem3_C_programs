@@ -1,11 +1,26 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 struct trienode
 {
 	struct trienode* child[26];
 	int eow;
 };
 typedef struct trienode trienode;
+
+struct structure
+{
+	trienode* parent;
+	char token;
+};
+typedef struct structure structure;
+struct stack
+{
+	struct structure** arr;
+	int top;
+};
+typedef struct stack stack;
+
 trienode* insert(trienode* pos,char token)
 {
 	int index=(int)token-(int)('A');
@@ -36,12 +51,111 @@ int search(trienode* ptr,char* token)
 			else if(*token=='\0' && start->eow==0)
 				return -1;//return -1 if it has to search only if that word is inserted like if integer inserted and int should show not found
 			else if(start->child[index]==NULL)
-			return 0;
+			return 0;//goes out of trie branching
 		else
 		{
 			start=start->child[index];
 			*(token++);
 		}
+	}
+}
+structure* insertstruct(trienode* ptr,char token)
+{
+	structure *new=malloc(sizeof(structure));
+	//new->parent=malloc(sizeof(trienode*)*26);
+	new->parent=ptr;
+	new->token=token;
+	return new;
+}
+
+void push(stack* st,structure* data)
+{
+	st->arr[++(st->top)]=data;
+}
+structure* pop(stack *st)
+{
+	if(st->top!=-1)
+		return st->arr[(st->top)--];
+	else
+		return NULL;
+}	
+void delete(trienode* root,char* key)
+{
+	int i=0;
+	char token=key[i];
+	int ser=search(root,key);
+	stack* s=malloc(sizeof(stack));
+	s->arr=malloc(sizeof(structure*)*100);
+	s->top=-1;
+	trienode* cur=root;
+	if(ser==0)
+		printf("Not found");
+	else
+	{
+		cur=root;
+		structure* structure1;
+		while(token!='\0')
+		{
+			structure1=insertstruct(cur,token);
+			printf("push%c\n", token);
+			push(s,structure1);
+			cur=cur->child[token-'A'];
+			token=key[++i];
+		}
+		cur->eow=0;
+		int count=0;
+		while(s->top!=-1)
+		{
+			structure* popstruct;
+			popstruct=pop(s);
+			int index2=popstruct->token-'A';
+			if((popstruct->parent)->child[index2]!=NULL && (popstruct->parent->child[index2])->eow==0)
+			{
+				count=0;
+				trienode* del=popstruct->parent->child[index2];
+				for(int x=0;x<26;x++)
+				{
+					if(del->child[x]!=NULL)
+					{
+						count=1;
+						break;
+					}
+						
+				}
+				if(count!=1)
+				{
+					free(del);
+					popstruct->parent->child[index2]=NULL;
+				}
+			}
+			else
+				break;
+
+		}
+
+	}
+}
+void showtrie(trienode* root,int pos,char* a)
+{
+	
+	for(int i=0;i<26;i++)
+	{
+		if(root->child[i]!=NULL)
+		{
+			a[pos]=i+'A';
+			/*if(root->eow==1)
+				printf("%s\n",a);
+			*/
+			pos++;
+			showtrie(root->child[i],pos,a);
+			pos--;
+		}
+	}
+	if(root->eow==1)
+	{
+		char *s1=malloc(sizeof(char)*pos);
+		s1=strncpy(s1,a,pos);
+		printf("%s,%d\n",s1,pos);
 	}
 }
 int main()
@@ -78,6 +192,19 @@ int main()
 		int ser=search(root,key);
 		printf("found(0 if not found, 1 if found and -1 if it is a substring(only prefix substring)):%d\n",ser);
 	}
+	printf("Enter string to delete");
+	scanf("%s",key);
+	delete(root,key);
+	//printf("%d\n",search(root,key));
+	printf("Enter number of strings to search\n");
+	scanf("%d",&n);
+	for(int i=0;i<n;i++)
+	{
+		scanf("%s",key);
+		int ser=search(root,key);
+		printf("found(0 if not found, 1 if found and -1 if it is a substring(only prefix substring)):%d\n",ser);
+	}char a[100];
+	showtrie(root,0,a);
 	return 0;
 }
 

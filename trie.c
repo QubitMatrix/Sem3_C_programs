@@ -158,6 +158,29 @@ void showtrie(trienode* root,int pos,char* a)
 		printf("%s,%d\n",s1,pos);
 	}
 }
+void autofill(trienode* root,int pos,char* a)
+{
+
+        for(int i=0;i<26;i++)
+        {
+                if(root->child[i]!=NULL)
+                {
+                        a[pos]=i+'A';
+                        /*if(root->eow==1)
+                                printf("%s\n",a);
+                        */
+                        pos++;
+                        showtrie(root->child[i],pos,a);
+                        pos--;
+                }
+        }
+        if(root->eow==1)
+        {
+                char *s1=malloc(sizeof(char)*pos);
+                s1=strncpy(s1,a,pos);
+                printf("%s,%d\n",s1,pos);
+        }
+}
 int main()
 {
 	trienode* root;
@@ -205,6 +228,21 @@ int main()
 		printf("found(0 if not found, 1 if found and -1 if it is a substring(only prefix substring)):%d\n",ser);
 	}char a[100];
 	showtrie(root,0,a);
+	printf("Enter string for autofill\n");
+	scanf("%s",key);
+	char tok;
+	int i=0;
+	tok=key[i];
+	int index=0;
+	trienode* droot=root;
+	while(i<strlen(key))
+	{
+		index=tok-'A';
+		droot=droot->child[index];
+		tok=key[++i];
+	}
+
+	autofill(droot,strlen(key),key);
 	return 0;
 }
 

@@ -29,12 +29,12 @@ int search(trienode* ptr,char* token)
 	{
 		printf("%c\n",*token);
 		int index=(int)(*token)-(int)('A');
-		printf("%d\n",index);
+		printf("%d,%p\n",index,start->child[index]);
 		
 			if(*token=='\0' && start->eow==1)
 				return 1;
 			else if(*token=='\0' && start->eow==0)
-				return 1;//return -1 if it has to search only if that word is inserted like if integer inserted and int should show not found
+				return -1;//return -1 if it has to search only if that word is inserted like if integer inserted and int should show not found
 			else if(start->child[index]==NULL)
 			return 0;
 		else
@@ -49,7 +49,10 @@ int main()
 	trienode* root;
 	root=malloc(sizeof(trienode));
 	char pattern[100];
-	for(int j=0;j<5;j++)
+	int n;
+	printf("Enter the number of strings to enter\n");
+	scanf("%d",&n);
+	for(int j=0;j<n;j++)
 	{
 		scanf("%s",pattern);
 		trienode* pos=root;
@@ -67,9 +70,14 @@ int main()
 		}
 	}
 	char key[100];
-	scanf("%s",key);
-	int ser=search(root,key);
-	printf("found:%d\n",ser);
+	printf("Enter number of strings to search\n");
+	scanf("%d",&n);
+	for(int i=0;i<n;i++)
+	{
+		scanf("%s",key);
+		int ser=search(root,key);
+		printf("found(0 if not found, 1 if found and -1 if it is a substring(only prefix substring)):%d\n",ser);
+	}
 	return 0;
 }
 

@@ -3,14 +3,15 @@
 struct node
 {
         int key;
-        struct node* link;
+        struct node* llink;
+	struct node* rlink;
 };
 typedef struct node node;
 node* allocnode(int key)
 {
         node* new=malloc(sizeof(node));
         new->key=key;
-        new->link=NULL;
+        new->llink=new->rlink=NULL;
         return new;
 }
 void display(node* head,int *count)
@@ -19,7 +20,7 @@ void display(node* head,int *count)
         {
                 printf("%d ",head->key);
                 (*count)++;//*count++ is wrong
-		head=head->link;
+		head=head->rlink;
         }
 }
 void destroy(node** head)
@@ -27,7 +28,7 @@ void destroy(node** head)
         while(*head!=NULL)
         {
                 node* temp=*head;
-                *head=(*head)->link;
+                *head=(*head)->rlink;
                 free(temp);
         }
 }
@@ -36,7 +37,7 @@ void insert_pos(node** head,int key,int pos)
 	node* newnode=allocnode(key);
 	if(pos==1)
 	{
-		newnode->link=*head;
+		newnode->rlink=*head;
 		*head=newnode;
 	}
 	else
@@ -47,13 +48,16 @@ void insert_pos(node** head,int key,int pos)
 		while(i<pos && dhead!=NULL)
 		{
 			prev=dhead;
-			dhead=dhead->link;
+			dhead=dhead->rlink;
 			i++;
 		}
 		if(i==pos)
 		{
-			newnode->link=dhead;
-			prev->link=newnode;
+			newnode->rlink=dhead;
+			if(dhead!=NULL)
+				dhead->llink=newnode;
+			newnode->llink=prev;
+			prev->rlink=newnode;
 		}
 		else
 		{
@@ -61,6 +65,7 @@ void insert_pos(node** head,int key,int pos)
 		}
 	}
 }
+
 void delete_alt(node** head)
 {
 	node* dhead=*head;
@@ -68,13 +73,16 @@ void delete_alt(node** head)
 	while(dhead!=NULL)
 	{
 		if(temp!=NULL)
-		{
-			temp->link=dhead->link;	
+		{		
+			temp->rlink=dhead->rlink;
+			if(dhead->rlink!=NULL)
+				dhead->rlink->llink=temp;
 		}
-		temp=dhead->link;
+		temp=dhead->rlink;
 		//printf("%d\n",dhead->key);
 		if(dhead==(*head))
 		{
+			temp->llink=NULL;
 			*head=temp;
 			free(dhead);
 		}
@@ -83,7 +91,7 @@ void delete_alt(node** head)
 		if(temp==NULL)
 			dhead=temp;
 		else
-			dhead=temp->link;
+			dhead=temp->rlink;
 	}
 }
 int main()

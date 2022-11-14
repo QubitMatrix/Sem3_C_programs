@@ -1,3 +1,4 @@
+//consider a sorted doubly linked list with two pointers head and tail pointer, write a c function to find all the pairs form this list which add up to the given value x
 #include<stdio.h>
 #include<stdlib.h>
 struct node
@@ -7,20 +8,21 @@ struct node
 	struct node* llink;
 };
 typedef struct node node;
-void find_pairs(node* s1,node* s2,int x)
+void find_pairs(node* s1,node* tail,int x)
 {
 	
-	node*ds2=s2;
-	while(s1!=NULL)
+	node* ds1=s1;
+	node* ds2=tail;
+	while(ds1!=NULL)
 	{
-		while(ds2!=NULL)
+		while(ds2!=ds1->llink)
 		{
-			if(s1->data+ds2->data==x)
-				printf("%d %d\n",s1->data,ds2->data);
-			ds2=ds2->rlink;
+			if(ds1->data+ds2->data==x)
+				printf("%d %d\n",ds1->data,ds2->data);
+			ds2=ds2->llink;
 		}
-		s1=s1->rlink;
-		ds2=s2;
+		ds1=ds1->rlink;
+		ds2=tail;
 	}
 }
 int main()
@@ -33,6 +35,8 @@ int main()
         node *ds2=s2;
         node *ds1_=s1;
         node* ds2_=s2;
+	node* tail=calloc(1,sizeof(node));
+	tail=NULL;
         printf("Enter the elements in list 1 (-1 to end)");
         int key;
         scanf("%d",&key);
@@ -55,43 +59,18 @@ int main()
                 }
                 scanf("%d",&key);
         }
-        printf("Enter the elements in list 2(-1 to end");
-        scanf("%d",&key);
-        while(key!=-1)
-        {
-                node *newnode=malloc(sizeof(node));
-                newnode->data=key;
-                newnode->rlink=newnode->llink=NULL;
-                if(s2==NULL)
-                {
-                        s2=newnode;
-                        ds2=s2;
-                        ds2_=s2;
-                }
-                else
-                {
-                        ds2->rlink=newnode;
-			newnode->llink=ds2;
-                         ds2=ds2->rlink;
-                }
-                scanf("%d",&key);
-        }
 	printf("List1:\n");
         while(ds1_!=NULL)
         {
 		printf("%d\n",ds1_->data);
+		tail=ds1_;
                 ds1_=ds1_->rlink;
         }
-	printf("List2:\n");
-        while(ds2_!=NULL)
-        {
-                printf("%d\n",ds2_->data);
-                ds2_=ds2_->rlink;
-        }
+
 	int x;
-	printf("Valus of x\n");
+	printf("Value of x\n");
 	scanf("%d",&x);
-	find_pairs(s1,s2,x);
+	find_pairs(s1,tail,x);
 	return 0;
 }
 

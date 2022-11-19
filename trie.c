@@ -127,6 +127,8 @@ void delete(trienode* root,char* key)
 					free(del);
 					popstruct->parent->child[index2]=NULL;
 				}
+				else
+					break;
 			}
 			else
 				break;
@@ -170,7 +172,7 @@ void autofill(trienode* root,int pos,char* a)
                                 printf("%s\n",a);
                         */
                         pos++;
-                        showtrie(root->child[i],pos,a);
+                        autofill(root->child[i],pos,a);
                         pos--;
                 }
         }
@@ -179,8 +181,9 @@ void autofill(trienode* root,int pos,char* a)
                 char *s1=malloc(sizeof(char)*pos);
                 s1=strncpy(s1,a,pos);
                 printf("%s,%d\n",s1,pos);
-        }
+        }//given at top (like dfs) for lexicographical order
 }
+
 int main()
 {
 	trienode* root;
@@ -226,7 +229,8 @@ int main()
 		scanf("%s",key);
 		int ser=search(root,key);
 		printf("found(0 if not found, 1 if found and -1 if it is a substring(only prefix substring)):%d\n",ser);
-	}char a[100];
+	}
+	char a[100];
 	showtrie(root,0,a);
 	printf("Enter string for autofill\n");
 	scanf("%s",key);
@@ -245,4 +249,3 @@ int main()
 	autofill(droot,strlen(key),key);
 	return 0;
 }
-
